@@ -85,7 +85,7 @@ function stopTunnel(callback) {
 function startBrowser(callback) {
     console.log('Starting browser');
     browser.init({
-        browser: 'chrome',
+        browserName: 'chrome',
         'tunnel-identifier': id,
         name: 'Test browser'
     }, function(err) {
