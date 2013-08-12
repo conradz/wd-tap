@@ -1,5 +1,7 @@
 # wd-tap
 
+[![Build Status](https://travis-ci.org/conradz/wd-tap.png?branch=master)](https://travis-ci.org/conradz/wd-tap)
+
 Run TAP tests in the browser with WebDriver.
 
 This is a simple utility to run [TAP](http://testanything.org/) tests in a
