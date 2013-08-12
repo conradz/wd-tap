@@ -16,8 +16,8 @@ you could use a service like [Sauce Labs](http://saucelabs.com/) that will run
 them for you. For attaching to a WebDriver-automated browser, use
 [wd](https://github.com/admc/wd) that allows Node to interface to WebDriver.
 
-The test results are parsed using [tap-parser](https://github.com/substack
-/tap-parser).
+The test results are parsed using
+[tap-parser](https://github.com/substack/tap-parser).
 
 ## Example
 
