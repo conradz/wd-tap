@@ -1,0 +1,39 @@
+{
+  "name": "wd-tap",
+  "version": "0.0.0",
+  "description": "Run TAP tests in the browser with WebDriver",
+  "keywords": [
+    "wd",
+    "webdriver",
+    "tap",
+    "test",
+    "browser",
+    "web"
+  ],
+
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+
+  "author": "Conrad Zimmerman <me@conradz.com>",
+  "license": "BSD",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:conradz/wd-tap.git"
+  },
+  "bugs": {
+    "url": "https://github.com/conradz/wd-tap/issues"
+  },
+
+  "dependencies": {
+    "wd": "0.0.34",
+    "tap-finished": "0.0.0"
+  },
+
+  "devDependencies": {
+    "sauce-tunnel": "~1.0.1",
+    "async": "~0.2.9",
+    "connect": "~2.8.5"
+  }
+}
