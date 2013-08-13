@@ -31,46 +31,74 @@ function createParser(callback) {
     return parser;
 }
 
-function wdTap(url, browser, callback) {
-    var parser = createParser(results),
-        finished = false;
+function wdTap(url, browser, options, callback) {
+    var parser = createParser(function(data) { done(null, data); }),
+        finished = false,
+        timeout = 30,
+        cancelTimer = null,
+        updateTimer = null;
+
+    if (typeof options === 'function') {
+        callback = options;
+        options = {};
+    }
+
+    if (typeof options.timeout === 'number') {
+        timeout = options.timeout;
+    }
+
+    function cancel() {
+        done(new Error('Tests timed out'));
+    }
 
     function update() {
+        updateTimer = null;
         if (finished) {
             return;
         }
 
         browser.elementById('output', function(err, el) {
             if (err) {
-                finished = true;
-                return callback(err);
+                return done(err);
             }
 
             el.text(function(err, text) {
                 if (err) {
-                    finished = true;
-                    return callback(err);
+                    return done(err);
                 }
 
                 parser.update(text);
 
                 if (!finished) {
-                    setTimeout(update, 500);
+                    updateTimer = setTimeout(update, 500);
                 }
             });
         });
     }
 
-    function results(data) {
+    function done(err, data) {
+        if (finished) {
+            return;
+        }
+
         finished = true;
-        callback(null, data);
+        if (cancelTimer !== null) {
+            clearTimeout(cancelTimer);
+        }
+        if (updateTimer !== null) {
+            clearTimeout(updateTimer);
+        }
+
+        callback(err, data);
     }
 
     browser.get(url, function(err) {
         if (err) {
-            return callback(err);
+            return done(err);
         }
 
         update();
     });
+
+    cancelTimer = setTimeout(cancel, timeout * 1000);
 }

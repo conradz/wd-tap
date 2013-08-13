@@ -9,7 +9,7 @@ browser that is automated using
 [WebDriver](http://docs.seleniumhq.org/projects/webdriver/), driven using
 [Node.js](http://nodejs.org/).
 
-## Getting Started
+## Requirements
 
 You must first have a test page that has a `<pre>` element with an ID of
 `output` that will contain the TAP test output. You will also need a web
@@ -48,3 +48,27 @@ browser.init(function(err) {
     });
 });
 ```
+
+## Reference
+
+### `wdTap(url, browser, [options], callback)`
+
+Runs the tests in the browser.
+
+`url` is the URL of the web page that contains the tests. The test TAP output
+must be written to a `<pre>` element with an ID of `output`.
+
+`browser` is the browser (connected with [wd](https://github.com/admc/wd)) that
+will run the tests. It must be able to access the test URL.
+
+`options` is an optional object that may contain a `timeout` property
+specifying the maximum time (in seconds) to wait for the TAP output to be
+completed. If the TAP output is not completed in that time, an error will be
+passed to `callback`. The default timeout is 30 seconds.
+
+`callback` will be called after the tests are finished. If an error occured
+(for example if the connection to the browser was disconnected), it will be
+passed to the callback. If no error occurred, the TAP results (parsed with
+[tap-parser](https://github.com/substack/tap-parser)) will be passed to the
+callback as the second argument. Note that if a test fails, it will not be
+considered an error, the results will indicate which tests passed or failed.
