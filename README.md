@@ -1,6 +1,7 @@
 # wd-tap
 
 [![Build Status](https://travis-ci.org/conradz/wd-tap.png?branch=master)](https://travis-ci.org/conradz/wd-tap)
+[![Dependency Status](https://gemnasium.com/conradz/wd-tap.png)](https://gemnasium.com/conradz/wd-tap)
 
 Run TAP tests in the browser with WebDriver.
 
