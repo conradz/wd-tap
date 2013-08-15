@@ -1,5 +1,4 @@
-var wd = require('wd'),
-    finished = require('tap-finished');
+var finished = require('tap-finished');
 
 module.exports = wdTap;
 
