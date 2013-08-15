@@ -2,7 +2,7 @@ var async = require('async'),
     path = require('path'),
     connect = require('connect'),
     wd = require('wd'),
-    SauceTunnel = require('sauce-tunnel'),
+    sauceConnect = require('sauce-connect-launcher'),
     http = require('http'),
     wdTap = require('./');
 
@@ -16,8 +16,8 @@ if (!user || !key) {
 var browser = wd.remote('ondemand.saucelabs.com', 80, user, key),
     server = null,
     serverPort = 8000,
-    id = 'test-' + Date.now(),
-    tunnel = new SauceTunnel(user, key, id, true, 120),
+    id = 'test-wd-tap-' + Date.now(),
+    tunnel,
     success = false;
 
 run();
@@ -64,19 +64,26 @@ function stopServer(callback) {
 
 function startTunnel(callback) {
     console.log('Opening tunnel to SauceLabs');
-    tunnel.start(function(opened) {
-        if (!opened) {
-            callback(new Error('Could not open tunnel'));
-        } else {
-            console.log('Tunnel opened');
-            callback();
+    var options = {
+        tunnelIdentifier: id,
+        username: user,
+        accessKey: key
+    };
+
+    sauceConnect(options, function(err, t) {
+        if (err) {
+            return callback(err);
         }
+
+        tunnel = t;
+        console.log('Tunnel opened');
+        callback();
     });
 }
 
 function stopTunnel(callback) {
     console.log('Closing tunnel');
-    tunnel.stop(function() {
+    tunnel.close(function() {
         console.log('Tunnel closed');
         callback();
     });
