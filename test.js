@@ -13,71 +13,49 @@ if (!user || !key) {
     process.exit(1);
 }
 
-var browser = wd.remote('ondemand.saucelabs.com', 80, user, key),
-    server = null,
+var browsers = [
+    { name: 'Chrome', browserName: 'chrome' },
+    { name: 'IE 9', browserName: 'internet explorer', platform: 'Windows 7', version: '9' }
+];
+
+var server = null,
     serverPort = 8000,
-    id = 'test-wd-tap-' + Date.now(),
-    tunnel,
-    success = false;
+    tunnelId = 'test-wd-tap-' + Date.now(),
+    tunnel;
 
-run();
+startServer()
 
-function run() {
-    async.series([
-        start,
-        test,
-        stop
-    ], complete);
-}
-
-function start(callback) {
-    // Tunnel must be started before browser
-    async.series([
-        startTunnel,
-        startServer,
-        startBrowser
-    ], callback);
-}
-
-function stop(callback) {
-    async.parallel([
-        stopTunnel,
-        stopBrowser,
-        stopServer
-    ], callback);
-}
-
-function startServer(callback) {
+function startServer() {
     var app = connect();
     app.use(connect.static(path.join(__dirname, 'assets')));
 
     server = http.createServer(app);
-    server.listen(serverPort, function() {
+    server.listen(serverPort, function(err) {
+        if (err) {
+            return error(err);
+        }
+
         serverPort = server.address().port;
-        callback();
+        startTunnel();
     });
 }
 
-function stopServer(callback) {
-    server.close(callback);
-}
-
-function startTunnel(callback) {
+function startTunnel() {
     console.log('Opening tunnel to SauceLabs');
     var options = {
-        tunnelIdentifier: id,
+        tunnelIdentifier: tunnelId,
         username: user,
         accessKey: key
     };
 
     sauceConnect(options, function(err, t) {
         if (err) {
-            return callback(err);
+            return error(err);
         }
 
         tunnel = t;
         console.log('Tunnel opened');
-        callback();
+        test();
     });
 }
 
@@ -89,63 +67,87 @@ function stopTunnel(callback) {
     });
 }
 
-function startBrowser(callback) {
-    console.log('Starting browser');
-    browser.init({
-        browserName: 'chrome',
-        'tunnel-identifier': id,
-        name: 'Test browser'
-    }, function(err) {
-        if (err) {
-            return callback(err);
+function test() {
+    async.eachSeries(browsers, runTest, complete);
+
+    function runTest(browser, callback) {
+        var driver;
+        start();
+
+        function start() {
+            console.log('Starting', browser.name);
+            browser['tunnel-identifier'] = tunnelId;
+
+            driver = wd.remote('ondemand.saucelabs.com', 80, user, key);
+            driver.init(browser, run);
         }
 
-        console.log('Started browser');
-        callback();
+        function run(err) {
+            if (err) {
+                return callback(err);
+            }
+
+            console.log('Testing', browser.name);
+            wdTap(
+                'http://localhost:' + serverPort + '/test.html',
+                driver,
+                done);
+        }
+
+        function done(err, results) {
+            console.log(browser.name, results.ok ? 'Passed' : 'Failed');
+            driver.quit(function() {
+                if (!err && !results.ok) {
+                    err = new Error('Tests failed');
+                }
+
+                callback(err);
+            });
+        }
+    }
+
+    function complete(err) {
+        if (err) {
+            return error(err);
+        }
+
+        success();
+    }
+}
+
+function success() {
+    console.log('All tests passed');
+    cleanup();
+}
+
+function error(err) {
+    console.error('Error occurred');
+    console.error(err);
+
+    cleanup(function() {
+        process.exit(1);
     });
 }
 
-function stopBrowser(callback) {
-    console.log('Stopping browser');
-    browser.quit(function() {
-        console.log('Stopped browser');
-        callback();
-    });
+function cleanup(callback) {
+    async.series([
+        cleanupServer,
+        cleanupTunnel
+    ], callback);
 }
 
-function test(callback) {
-    wdTap(
-        'http://localhost:' + serverPort + '/test.html',
-        browser,
-        complete);
-
-    function complete(err, results) {
-        if (err) {
-            console.error(err);
-            return callback();
-        }
-
-        if (!results.ok) {
-            console.error('Tests did not pass');
-            return callback();
-        }
-
-        success = true;
-        callback();
+function cleanupServer(callback) {
+    if (!server) {
+        return callback();
     }
+
+    server.close(callback);
 }
 
-function complete(err) {
-    if (err) {
-        console.error('Error occurred');
-        console.error(err);
-        process.exit(1);
+function cleanupTunnel(callback) {
+    if (!tunnel) {
+        return callback();
     }
 
-    if (success) {
-        console.log('Success!');
-    } else {
-        console.log('Tests failed');
-        process.exit(1);
-    }
+    tunnel.close(callback);
 }
