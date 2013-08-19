@@ -7,6 +7,9 @@ function createParser(callback) {
         received = [];
 
     parser.update = function(text) {
+        text = text || '';
+        text = text.replace(/[\r\n]+/g, '\n');
+        text = text.trim();
         if (!text) {
             return;
         }
