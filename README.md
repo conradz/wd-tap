@@ -1,5 +1,7 @@
 # wd-tap
 
+[![NPM](https://nodei.co/npm/wd-tap.png?compact=true)](https://nodei.co/npm/wd-tap/)
+
 [![Build Status](https://drone.io/github.com/conradz/wd-tap/status.png)](https://drone.io/github.com/conradz/wd-tap/latest)
 [![Dependency Status](https://gemnasium.com/conradz/wd-tap.png)](https://gemnasium.com/conradz/wd-tap)
 
