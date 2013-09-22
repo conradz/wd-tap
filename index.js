@@ -26,7 +26,7 @@ function createParser(callback) {
         if (i < lines.length) {
             var newLines = lines.slice(i);
             received = received.concat(newLines);
-            parser.write(newLines.join('\r\n'));
+            parser.write(newLines.join('\r\n') + '\r\n');
         }
     };
 
