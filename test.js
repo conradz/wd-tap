@@ -1,6 +1,6 @@
 var async = require('async'),
     path = require('path'),
-    connect = require('connect'),
+    st = require('st'),
     wd = require('wd'),
     sauceConnect = require('sauce-connect-launcher'),
     http = require('http'),
@@ -23,21 +23,21 @@ var server = null,
     tunnelId = 'test-wd-tap-' + Date.now(),
     tunnel;
 
-startServer()
+startServer();
 
 function startServer() {
-    var app = connect();
-    app.use(connect.static(path.join(__dirname, 'assets')));
-
-    server = http.createServer(app);
-    server.listen(serverPort, function(err) {
+    var dir = path.join(__dirname, 'assets');
+    server = http.createServer(st({ path: dir, cache: false }));
+    server.listen(serverPort, listening);
+    
+    function listening(err) {
         if (err) {
             return error(err);
         }
 
         serverPort = server.address().port;
         startTunnel();
-    });
+    }
 }
 
 function startTunnel() {

@@ -28,8 +28,8 @@
   },
   "devDependencies": {
     "async": "~0.2.9",
-    "connect": "~2.8.5",
     "wd": "~0.1.0",
-    "sauce-connect-launcher": "~0.1.11"
+    "sauce-connect-launcher": "~0.1.11",
+    "st": "~0.2.3"
   }
 }
