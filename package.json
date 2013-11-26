@@ -24,12 +24,12 @@
     "url": "https://github.com/conradz/wd-tap/issues"
   },
   "dependencies": {
-    "tap-finished": "0.0.0"
+    "tap-finished": "0.0.1"
   },
   "devDependencies": {
     "async": "~0.2.9",
-    "wd": "~0.1.0",
-    "sauce-connect-launcher": "~0.1.11",
+    "wd": "~0.2.5",
+    "sauce-connect-launcher": "~0.2.2",
     "st": "~0.2.3"
   }
 }
