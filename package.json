@@ -1,6 +1,6 @@
 {
   "name": "wd-tap",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "Run TAP tests in the browser with WebDriver",
   "keywords": [
     "wd",
