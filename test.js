@@ -94,8 +94,11 @@ function test() {
                 done);
         }
 
-        function done(err, results) {
-            console.log(browser.name, results.ok ? 'Passed' : 'Failed');
+        function done(err, results, rawResults) {
+            var passed = results.ok && 
+                         typeof rawResults === 'string' && 
+                         rawResults.length === 150;
+            console.log(browser.name, passed ? 'Passed' : 'Failed');
             driver.quit(function() {
                 if (!err && !results.ok) {
                     err = new Error('Tests failed');

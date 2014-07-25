@@ -34,7 +34,8 @@ function createParser(callback) {
 }
 
 function wdTap(url, browser, options, callback) {
-    var parser = createParser(function(data) { done(null, data); }),
+    var rawOutput = '',
+        parser = createParser(function(data) { done(null, data); }),
         finished = false,
         timeout = 30,
         cancelTimer = null,
@@ -69,6 +70,7 @@ function wdTap(url, browser, options, callback) {
                     return done(err);
                 }
 
+                rawOutput = text;
                 parser.update(text);
 
                 if (!finished) {
@@ -91,7 +93,7 @@ function wdTap(url, browser, options, callback) {
             clearTimeout(updateTimer);
         }
 
-        callback(err, data);
+        callback(err, data, rawOutput);
     }
 
     browser.get(url, function(err) {

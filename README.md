@@ -41,7 +41,7 @@ var browser = wd.remote(),
 browser.init(function(err) {
     if (err) { return; }
 
-    wdTap(url, browser, function(err, results) {
+    wdTap(url, browser, function(err, results, rawTapOutput) {
         // results is the parsed TAP results
         if (!results.ok) {
             console.log('Tests failed');
@@ -73,5 +73,6 @@ passed to `callback`. The default timeout is 30 seconds.
 (for example if the connection to the browser was disconnected), it will be
 passed to the callback. If no error occurred, the TAP results (parsed with
 [tap-parser](https://github.com/substack/tap-parser)) will be passed to the
-callback as the second argument. Note that if a test fails, it will not be
+callback as the second argument. The raw TAP results will be passed to the 
+callback as the third argument. Note that if a test fails, it will not be
 considered an error, the results will indicate which tests passed or failed.
