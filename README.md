@@ -67,7 +67,10 @@ will run the tests. It must be able to access the test URL.
 `options` is an optional object that may contain a `timeout` property
 specifying the maximum time (in seconds) to wait for the TAP output to be
 completed. If the TAP output is not completed in that time, an error will be
-passed to `callback`. The default timeout is 30 seconds.
+passed to `callback`. The default timeout is 30 seconds. You may also set the
+`rawTapOutput` property to `true` to get the raw tap output printed with 
+`console.log()`. This is useful if you prefer to use another module that 
+operates on raw tap output because it already uses `tap-parser` internally.
 
 `callback` will be called after the tests are finished. If an error occured
 (for example if the connection to the browser was disconnected), it will be
