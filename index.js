@@ -34,7 +34,8 @@ function createParser(callback) {
 }
 
 function wdTap(url, browser, options, callback) {
-    var parser = createParser(function(data) { done(null, data); }),
+    var parser,
+        rawTapOutput,
         finished = false,
         timeout = 30,
         cancelTimer = null,
@@ -48,6 +49,14 @@ function wdTap(url, browser, options, callback) {
     if (typeof options.timeout === 'number') {
         timeout = options.timeout;
     }
+
+    parser = createParser(function(data) {
+        if (options.rawTapOutput) {
+            done(null, rawTapOutput);
+        } else {
+            done(null, data);
+        }
+    });
 
     function cancel() {
         done(new Error('Tests timed out'));
@@ -69,6 +78,7 @@ function wdTap(url, browser, options, callback) {
                     return done(err);
                 }
 
+                rawTapOutput = text;
                 parser.update(text);
 
                 if (!finished) {
