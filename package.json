@@ -27,9 +27,9 @@
     "tap-finished": "0.0.1"
   },
   "devDependencies": {
-    "async": "~0.2.9",
-    "wd": "~0.2.5",
+    "async": "^0.9.0",
+    "wd": "^0.3.11",
     "sauce-connect-launcher": "~0.2.2",
-    "st": "~0.2.3"
+    "st": "^0.5.3"
   }
 }
