@@ -1,6 +1,6 @@
 # wd-tap
 
-[![NPM](https://img.shields.io/npm/v/npm.svg)](https://www.npmjs.com/package/wd-tap)
+[![NPM](https://img.shields.io/npm/v/wd-tap.svg)](https://www.npmjs.com/package/wd-tap)
 [![Build Status](https://img.shields.io/travis/conradz/wd-tap/master.svg)](https://travis-ci.org/conradz/wd-tap)
 
 Run TAP tests in the browser with WebDriver.
