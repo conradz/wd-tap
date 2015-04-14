@@ -1,10 +1,11 @@
-var async = require('async'),
-    path = require('path'),
-    st = require('st'),
-    wd = require('wd'),
-    sauceConnect = require('sauce-connect-launcher'),
-    http = require('http'),
-    wdTap = require('./');
+var assert = require('assert');
+var async = require('async');
+var path = require('path');
+var st = require('st');
+var wd = require('wd');
+var sauceConnect = require('sauce-connect-launcher');
+var http = require('http');
+var wdTap = require('./');
 
 var user = process.env.SAUCE_USER,
     key = process.env.SAUCE_KEY;
@@ -31,10 +32,7 @@ function startServer() {
     server.listen(serverPort, listening);
     
     function listening(err) {
-        if (err) {
-            return error(err);
-        }
-
+        assert.equal(err, null);
         serverPort = server.address().port;
         startTunnel();
     }
@@ -49,10 +47,7 @@ function startTunnel() {
     };
 
     sauceConnect(options, function(err, t) {
-        if (err) {
-            return error(err);
-        }
-
+        assert.equal(err, null);
         tunnel = t;
         console.log('Tunnel opened');
         test();
@@ -83,10 +78,7 @@ function test() {
         }
 
         function run(err) {
-            if (err) {
-                return callback(err);
-            }
-
+            assert.equal(err, null);
             console.log('Testing', browser.name);
             wdTap(
                 'http://localhost:' + serverPort + '/test.html',
@@ -95,48 +87,33 @@ function test() {
         }
 
         function done(err, results) {
-            var passed = results.ok && 
-                         typeof results.raw === 'string' && 
-                         results.raw.length === 150;
-            console.log(browser.name, passed ? 'Passed' : 'Failed');
-            driver.quit(function() {
-                if (!err && !passed) {
-                    err = new Error('Tests failed');
-                }
+            assert.equal(err, null);
+            assert.ok(results.ok);
+            assert.equal(typeof results.raw, 'string');
+            assert.equal(results.raw.length, 150);
 
-                callback(err);
-            });
+            console.log('Finished ' + browser.name);
+            driver.quit(callback);
         }
     }
 
     function complete(err) {
-        if (err) {
-            return error(err);
-        }
-
-        success();
+        assert.equal(err, null);
+        console.log('Tests completed');
+        cleanup();
     }
 }
 
-function success() {
-    console.log('All tests passed');
-    cleanup();
-}
-
-function error(err) {
-    console.error('Error occurred');
-    console.error(err);
-
-    cleanup(function() {
-        process.exit(1);
-    });
-}
-
-function cleanup(callback) {
+function cleanup() {
     async.series([
         cleanupServer,
         cleanupTunnel
-    ], callback);
+    ], done);
+
+    function done(err) {
+        assert.equal(err, null);
+        console.log('Finished');
+    }
 }
 
 function cleanupServer(callback) {
