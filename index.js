@@ -92,7 +92,11 @@ function wdTap(url, browser, options, callback) {
         if (updateTimer !== null) {
             clearTimeout(updateTimer);
         }
-        data.raw = raw
+
+        if (!err) {
+            data.raw = raw;
+        }
+
         callback(err, data);
     }
 
